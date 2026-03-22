@@ -1,8 +1,6 @@
 "use client";
 
-export const dynamic = "force-dynamic";
-
-import { useEffect, useRef, useState } from "react";
+import { Suspense, useEffect, useRef, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { db } from "../../firebase";
@@ -20,7 +18,7 @@ type Message = {
   createdAt: number;
 };
 
-export default function ChatPage() {
+function ChatContent() {
   const searchParams = useSearchParams();
   const tags = searchParams.get("tags")?.split(",") || [];
   const alltags = searchParams.get("alltags") || tags[0] || "";
@@ -330,5 +328,13 @@ export default function ChatPage() {
         </button>
       </div>
     </main>
+  );
+}
+
+export default function ChatPage() {
+  return (
+    <Suspense fallback={<div style={{ padding: 20 }}>読み込み中...</div>}>
+      <ChatContent />
+    </Suspense>
   );
 }
